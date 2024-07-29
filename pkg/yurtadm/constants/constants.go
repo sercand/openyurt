@@ -115,6 +115,8 @@ const (
 	ReuseCNIBin = "reuse-cni-bin"
 	// StaticPods flag set the specified static pods on this node want to install
 	StaticPods = "static-pods"
+	// KubernetesVersion flag sets the specified version of kubernetes. Otherwise it uses kubeadm config
+	KubernetesVersion = "kubernetes-version"
 
 	KubeletConfFileAvailableError = "FileAvailable--etc-kubernetes-kubelet.conf"
 	ManifestsDirAvailableError    = "DirAvailable--etc-kubernetes-manifests"

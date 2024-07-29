@@ -61,6 +61,7 @@ type joinOptions struct {
 	yurthubServer            string
 	reuseCNIBin              bool
 	staticPods               string
+	kubernetesVersion        string
 }
 
 // newJoinOptions returns a struct ready for being used for creating cmd join flags.
@@ -121,6 +122,10 @@ func addJoinConfigFlags(flagSet *flag.FlagSet, joinOptions *joinOptions) {
 	flagSet.StringVar(
 		&joinOptions.token, yurtconstants.TokenStr, "",
 		"Use this token for both discovery-token and tls-bootstrap-token when those values are not provided.",
+	)
+	flagSet.StringVar(
+		&joinOptions.kubernetesVersion, yurtconstants.KubernetesVersion, joinOptions.kubernetesVersion,
+		"Kubernetes version to do install. If empty kubeadm config will be used",
 	)
 	flagSet.StringVar(
 		&joinOptions.nodeType, yurtconstants.NodeType, joinOptions.nodeType,
@@ -301,6 +306,7 @@ func newJoinData(args []string, opt *joinOptions) (*joinData, error) {
 		yurthubServer:         opt.yurthubServer,
 		caCertHashes:          opt.caCertHashes,
 		organizations:         opt.organizations,
+		kubernetesVersion:     opt.kubernetesVersion,
 		nodeLabels:            make(map[string]string),
 		joinNodeData: &joindata.NodeRegistration{
 			Name:          name,
@@ -343,12 +349,14 @@ func newJoinData(args []string, opt *joinOptions) (*joinData, error) {
 	}
 	data.clientSet = client
 
-	k8sVersion, err := yurtadmutil.GetKubernetesVersionFromCluster(client)
-	if err != nil {
-		klog.Errorf("could not get kubernetes version, %v", err)
-		return nil, err
+	if data.kubernetesVersion == "" {
+		k8sVersion, err := yurtadmutil.GetKubernetesVersionFromCluster(client)
+		if err != nil {
+			klog.Errorf("could not get kubernetes version, %v", err)
+			return nil, err
+		}
+		data.kubernetesVersion = k8sVersion
 	}
-	data.kubernetesVersion = k8sVersion
 
 	// check whether specified nodePool exists
 	if len(opt.nodePoolName) != 0 {
