@@ -117,6 +117,8 @@ const (
 	StaticPods = "static-pods"
 	// KubernetesVersion flag sets the specified version of kubernetes. Otherwise it uses kubeadm config
 	KubernetesVersion = "kubernetes-version"
+	// CACertPath is server's public ca cert path. if this spesified it skips initial call
+	CaCertPath = "ca-cert-path"
 
 	KubeletConfFileAvailableError = "FileAvailable--etc-kubernetes-kubelet.conf"
 	ManifestsDirAvailableError    = "DirAvailable--etc-kubernetes-manifests"

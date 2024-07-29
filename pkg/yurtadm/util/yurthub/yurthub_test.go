@@ -306,6 +306,9 @@ func (j *testData) ReuseCNIBin() bool {
 func (j *testData) Namespace() string {
 	return ""
 }
+func (j *testData) CaCertPath() string {
+	return ""
+}
 
 func (j *testData) StaticPodTemplateList() []string {
 	return nil

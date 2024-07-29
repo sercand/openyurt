@@ -62,6 +62,7 @@ type joinOptions struct {
 	reuseCNIBin              bool
 	staticPods               string
 	kubernetesVersion        string
+	caCertPath               string
 }
 
 // newJoinOptions returns a struct ready for being used for creating cmd join flags.
@@ -180,6 +181,10 @@ func addJoinConfigFlags(flagSet *flag.FlagSet, joinOptions *joinOptions) {
 		"Sets the address for downloading k8s node resources",
 	)
 	flagSet.StringVar(
+		&joinOptions.caCertPath, yurtconstants.CaCertPath, joinOptions.caCertPath,
+		"Kubernetes version to do install. If empty kubeadm config will be used",
+	)
+	flagSet.StringVar(
 		&joinOptions.yurthubServer, yurtconstants.YurtHubServerAddr, joinOptions.yurthubServer,
 		"Sets the address for yurthub server addr",
 	)
@@ -236,6 +241,7 @@ type joinData struct {
 	yurthubManifest          string
 	kubernetesVersion        string
 	caCertHashes             []string
+	caCertPath               string
 	nodeLabels               map[string]string
 	kubernetesResourceServer string
 	yurthubServer            string
@@ -307,6 +313,7 @@ func newJoinData(args []string, opt *joinOptions) (*joinData, error) {
 		caCertHashes:          opt.caCertHashes,
 		organizations:         opt.organizations,
 		kubernetesVersion:     opt.kubernetesVersion,
+		caCertPath:            opt.caCertPath,
 		nodeLabels:            make(map[string]string),
 		joinNodeData: &joindata.NodeRegistration{
 			Name:          name,
@@ -511,4 +518,8 @@ func (j *joinData) StaticPodTemplateList() []string {
 
 func (j *joinData) StaticPodManifestList() []string {
 	return j.staticPodManifestList
+}
+
+func (j *joinData) CaCertPath() string {
+	return j.caCertPath
 }

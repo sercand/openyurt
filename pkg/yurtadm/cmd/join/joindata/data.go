@@ -44,6 +44,7 @@ type YurtJoinData interface {
 	BootstrapClient() *clientset.Clientset
 	NodeRegistration() *NodeRegistration
 	CaCertHashes() []string
+	CaCertPath() string
 	NodeLabels() map[string]string
 	IgnorePreflightErrors() sets.Set[string]
 	KubernetesResourceServer() string
